@@ -12,8 +12,8 @@ public class skillShot : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        lifeSpan = 5f;
-        speed = 0.1f;
+        lifeSpan = 0.6f;
+        speed = 0.12f;
         skillDamage = 1;
         DestroyTime = lifeSpan + Time.time;
     }
@@ -28,14 +28,17 @@ public class skillShot : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other) {
+        Debug.Log("OnTriggerEnter");
         if (other.tag == "enemy") {
             other.GetComponent<enemy>().takeDamage(skillDamage);
             Destroy(gameObject);
         }
     }
+    void OnCollisionEnter(Collision x) {
+        Debug.Log("OnTriggerEnter");
+    }
 
     public void setDirection(Vector3 dir) {
-        Debug.Log("set");
         direction = dir;
     }
 }

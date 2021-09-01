@@ -8,10 +8,12 @@ public class playerMovement : MonoBehaviour
     // Start is called before the first frame update
     private NavMeshAgent agent;
     public Camera cam;
+    public LineRenderer line;
     // public ThirdPersonCharacter character;
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        line = GetComponent<LineRenderer>();
     }
 
     // Update is called once per frame
@@ -19,6 +21,7 @@ public class playerMovement : MonoBehaviour
     {
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+        
         if (Physics.Raycast(ray, out hit)) {
             if (Input.GetMouseButtonDown(1)) {
                 agent.SetDestination(hit.point);
@@ -39,7 +42,16 @@ public class playerMovement : MonoBehaviour
                 r(hit.point);
             }
         }
+        if (agent.remainingDistance > agent.stoppingDistance) {
+            drawPath(agent.path);
+        }
         
+    }
+    public void drawPath(NavMeshPath path) {
+        if (path.corners.Length < 2) 
+            return;
+        line.SetVertexCount(path.corners.Length);
+        line.SetPositions(path.corners);
     }
 
     public virtual void q(Vector3 mousePos) {

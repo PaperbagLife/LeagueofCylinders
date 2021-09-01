@@ -7,7 +7,7 @@ public class Ezreal : playerMovement
     public float cdQ;
     private float nextFireQ;
     public GameObject mysticShot;
-    public float qOffset = 1.7f;
+    public float qOffset = 3f;
     public int qSpeed = 10;
     public float cdW;
     private float nextFireW;
