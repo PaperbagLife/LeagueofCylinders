@@ -22,7 +22,6 @@ public class Ezreal : playerMovement
             direction.y = 0;
             direction.Normalize();
             GameObject newQ = Instantiate(mysticShot, transform.position + direction * qOffset, Quaternion.identity);
-            newQ.transform.position = gameObject.transform.position + direction * qOffset;
             Debug.Log(direction);
             newQ.GetComponent<skillShot>().setDirection(direction);
             nextFireQ = Time.time + cdQ;

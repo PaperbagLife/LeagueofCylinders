@@ -9,6 +9,13 @@ public class playerMovement : MonoBehaviour
     private NavMeshAgent agent;
     public Camera cam;
     public LineRenderer line;
+    public float attackRange = 100f;
+    public bool attacking = false;
+    public float attackSpeed = 0.5;
+    private GameObject attackTarget;
+    private GameObject aaProjectile;
+    private float nextAttackTime;
+
     // public ThirdPersonCharacter character;
     void Start()
     {
@@ -24,7 +31,14 @@ public class playerMovement : MonoBehaviour
         
         if (Physics.Raycast(ray, out hit)) {
             if (Input.GetMouseButtonDown(1)) {
-                agent.SetDestination(hit.point);
+                GameObject target = hit.collider.gameObject;
+                if (target.tag == "enemy") {
+                    attacking = true;
+                    attackTarget = target;
+                }
+                if (!attacking) {
+                    agent.SetDestination(hit.point);
+                }
             }
             if (agent.remainingDistance > agent.stoppingDistance) {
                 // character.Move(agent.desiredVelocity, false, false);
@@ -45,7 +59,28 @@ public class playerMovement : MonoBehaviour
         if (agent.remainingDistance > agent.stoppingDistance) {
             drawPath(agent.path);
         }
-        
+        if (attacking) {
+            // Check target distance
+            if (inRange(target)) {
+                autoAttack(target);
+            }
+            else {
+                agent.SetDestination(target.transform.position)
+            }
+        }
+    }
+    public void autoAttack(GameObject target) {
+        if (Time.time >= nextAttackTime) {
+            // Actually attack lol
+            GameObject aa = Instantiate(aaProjectile, transform.position, Quaternion.identity);
+            aa.setTarget(target);
+            nextAttackTime = Time.time + 1/attackSpeed;
+        }
+    }
+    public bool inRange(GameObject target) {
+        float dist = Vector3.Distance(target.transform.position,
+                                      transform.position);
+        return dist <= attackRange;
     }
     public void drawPath(NavMeshPath path) {
         if (path.corners.Length < 2) 
