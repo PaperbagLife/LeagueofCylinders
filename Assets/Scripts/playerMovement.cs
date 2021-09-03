@@ -11,9 +11,9 @@ public class playerMovement : MonoBehaviour
     public LineRenderer line;
     public float attackRange = 100f;
     public bool attacking = false;
-    public float attackSpeed = 0.5;
+    public float attackSpeed = 0.5f;
     private GameObject attackTarget;
-    private GameObject aaProjectile;
+    public GameObject aaProjectile;
     private float nextAttackTime;
 
     // public ThirdPersonCharacter character;
@@ -35,6 +35,9 @@ public class playerMovement : MonoBehaviour
                 if (target.tag == "enemy") {
                     attacking = true;
                     attackTarget = target;
+                }
+                else {
+                    attacking = false;
                 }
                 if (!attacking) {
                     agent.SetDestination(hit.point);
@@ -61,11 +64,11 @@ public class playerMovement : MonoBehaviour
         }
         if (attacking) {
             // Check target distance
-            if (inRange(target)) {
-                autoAttack(target);
+            if (inRange(attackTarget)) {
+                autoAttack(attackTarget);
             }
             else {
-                agent.SetDestination(target.transform.position)
+                agent.SetDestination(attackTarget.transform.position);
             }
         }
     }
@@ -73,7 +76,7 @@ public class playerMovement : MonoBehaviour
         if (Time.time >= nextAttackTime) {
             // Actually attack lol
             GameObject aa = Instantiate(aaProjectile, transform.position, Quaternion.identity);
-            aa.setTarget(target);
+            aa.GetComponent<autoattack>().setTarget(target);
             nextAttackTime = Time.time + 1/attackSpeed;
         }
     }
@@ -85,9 +88,10 @@ public class playerMovement : MonoBehaviour
     public void drawPath(NavMeshPath path) {
         if (path.corners.Length < 2) 
             return;
-        line.SetVertexCount(path.corners.Length);
+        line.positionCount = path.corners.Length;
         line.SetPositions(path.corners);
     }
+
 
     public virtual void q(Vector3 mousePos) {
 
