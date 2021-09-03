@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class playerMovement : MonoBehaviour
 {
@@ -9,18 +10,27 @@ public class playerMovement : MonoBehaviour
     private NavMeshAgent agent;
     public Camera cam;
     public LineRenderer line;
-    public float attackRange = 100f;
+   
     public bool attacking = false;
-    public float attackSpeed = 0.5f;
     private GameObject attackTarget;
     public GameObject aaProjectile;
     private float nextAttackTime;
+    public Image healthbar;
+    public int curHP = 500;
+    public int loot = 300;
+    public int gold = 0;
+
+    [Header("ChampionStats")]
+    public float attackRange = 100f;
+    public float attackSpeed = 0.5f;
+    public int maxHP = 500;
 
     // public ThirdPersonCharacter character;
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         line = GetComponent<LineRenderer>();
+        curHP = maxHP;
     }
 
     // Update is called once per frame
@@ -77,6 +87,7 @@ public class playerMovement : MonoBehaviour
             // Actually attack lol
             GameObject aa = Instantiate(aaProjectile, transform.position, Quaternion.identity);
             aa.GetComponent<autoattack>().setTarget(target);
+            aa.GetComponent<autoattack>().setOwner(gameObject);
             nextAttackTime = Time.time + 1/attackSpeed;
         }
     }
@@ -92,6 +103,18 @@ public class playerMovement : MonoBehaviour
         line.SetPositions(path.corners);
     }
 
+    public int takeDamage(int damage) {
+        curHP -= damage;
+        healthbar.fillAmount = curHP / maxHP;
+        if(curHP <= 0) {
+            Destroy(gameObject);
+            return loot;
+        }
+        return 0;
+    }
+    public void getGold(int income) {
+        gold += income;
+    }
 
     public virtual void q(Vector3 mousePos) {
 

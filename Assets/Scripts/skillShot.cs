@@ -9,6 +9,7 @@ public class skillShot : MonoBehaviour
     private float DestroyTime;
     public int skillDamage;
     private Vector3 direction;
+    private GameObject owner;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,17 +29,21 @@ public class skillShot : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other) {
-        Debug.Log("OnTriggerEnter");
         if (other.tag == "enemy") {
-            other.GetComponent<enemy>().takeDamage(skillDamage);
+            int income = other.GetComponent<enemy>().takeDamage(skillDamage);
+            if (income != 0) {
+                // Tell parent we got a kill
+                owner.gameObject.GetComponent<playerMovement>().getGold(income);
+            }
+
             Destroy(gameObject);
         }
-    }
-    void OnCollisionEnter(Collision x) {
-        Debug.Log("OnTriggerEnter");
     }
 
     public void setDirection(Vector3 dir) {
         direction = dir;
+    }
+    public void setOwner(GameObject parent) {
+        owner = parent;
     }
 }

@@ -24,6 +24,7 @@ public class Ezreal : playerMovement
             GameObject newQ = Instantiate(mysticShot, transform.position + direction * qOffset, Quaternion.identity);
             Debug.Log(direction);
             newQ.GetComponent<skillShot>().setDirection(direction);
+            newQ.GetComponent<skillShot>().setOwner(gameObject);
             nextFireQ = Time.time + cdQ;
         }
     }
