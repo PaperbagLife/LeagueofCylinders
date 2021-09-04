@@ -17,6 +17,10 @@ public class autoattack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (target == null) {
+            Destroy(gameObject);
+            return;
+        }
         transform.position = Vector3.MoveTowards(transform.position, 
             target.transform.position, Time.deltaTime * speed);
         if ((transform.position - target.transform.position).magnitude < 0.8f) {

@@ -21,16 +21,22 @@ public class playerMovement : MonoBehaviour
     public int gold = 0;
 
     [Header("ChampionStats")]
-    public float attackRange = 100f;
-    public float attackSpeed = 0.5f;
-    public int maxHP = 500;
+    public float attackRange;
+    public float attackSpeed;
+    public int maxHP;
 
     // public ThirdPersonCharacter character;
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         line = GetComponent<LineRenderer>();
+        setup();
+    }
+    public virtual void setup() {
+        maxHP = 500;
         curHP = maxHP;
+        attackRange = 2f;
+        attackSpeed = 0.5f;
     }
 
     // Update is called once per frame
@@ -72,9 +78,12 @@ public class playerMovement : MonoBehaviour
         if (agent.remainingDistance > agent.stoppingDistance) {
             drawPath(agent.path);
         }
-        if (attacking) {
+        if (attacking && attackTarget != null) {
             // Check target distance
             if (inRange(attackTarget)) {
+                agent.ResetPath();
+                drawPath(agent.path);
+                Debug.Log("attacking");
                 autoAttack(attackTarget);
             }
             else {
@@ -94,11 +103,10 @@ public class playerMovement : MonoBehaviour
     public bool inRange(GameObject target) {
         float dist = Vector3.Distance(target.transform.position,
                                       transform.position);
+        Debug.Log(dist);
         return dist <= attackRange;
     }
     public void drawPath(NavMeshPath path) {
-        if (path.corners.Length < 2) 
-            return;
         line.positionCount = path.corners.Length;
         line.SetPositions(path.corners);
     }

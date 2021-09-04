@@ -15,6 +15,12 @@ public class Ezreal : playerMovement
     private float nextFireE;
     public float cdR;
     private float nextFireR;
+    public override void setup() {
+        attackRange = 10f;
+        maxHP = 500;
+        curHP = maxHP;
+        attackSpeed = 0.5f;
+    }
     public override void q(Vector3 mousePos) {
         // Send out mystic shot
         if (Time.time > nextFireQ) {
